@@ -94,6 +94,8 @@ class IC_About_Component
             gameLocationString .= """legendary.exe"" (Legendary)"
         else if(InStr(g_UserSettings[ "InstallPath" ], "legendary "))
             gameLocationString .= """legendary "" (Legendary)"
+        else if(InStr(g_UserSettings[ "InstallPath" ], "Rare.exe"))
+            gameLocationString .= """legendary.exe"" (Rare)"
         else if(InStr(g_UserSettings[ "InstallPath" ], "heroic://"))
             gameLocationString .= """heroic://"" (Heroic)"
         else if(InStr(g_UserSettings[ "InstallPath" ], "IdleDragons.exe"))
@@ -268,7 +270,7 @@ class IC_About_Component
         RegExMatch(currentVersionLine, regex, currentVersion)
         currentVersion := currentVersion1
         this.ServerCaller := new SH_ServerCalls()
-        remoteURL := "https://raw.githubusercontent.com/mikebaldi/Idle-Champions/refs/heads/main/ICScriptHub.ahk"
+        remoteURL := "https://raw.githubusercontent.com/antilectual/Idle-Champions/refs/heads/main/ICScriptHub.ahk"
         remoteScript := this.ServerCaller.BasicServerCall(remoteURL)
         line := StrSplit(remoteScript, "`n", "`r")
         versionLine := line[25]

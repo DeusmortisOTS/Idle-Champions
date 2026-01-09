@@ -38,13 +38,13 @@ class IC_ServerCalls_Class extends SH_ServerCalls
         this.userHash := userHash
         this.instanceID := instanceID
         this.shinies := 0
-        this.LoadSettings()
+        this.LoadSettings(A_LineFile . "\..\ServerCall_Settings.json")
         return this
     }
 
     GetVersion()
     {
-        return "v2.4.5, 2025-10-29"
+        return "v2.4.6, 2025-11-11"
     }
 
     UpdateDummyData()

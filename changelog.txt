@@ -1,3 +1,46 @@
+November 23, 2025
+    Fixed BPH disappearing when doing game restarts (e.g. FORT restart).
+    Fixed GUI elements in parts of BrivGemFarm.
+    Added test for using Rare (i.e. instead of Legendary/EGS)
+    Updated Steam v637 Imports.
+    Made BrivGemFarm minimally functional again. (BrivGemFarm should no longer NEED levelup to run anymore but it is still very highly recommended.)
+    Fixed QT transition detection. 
+
+November 19, 2025
+    Added checks for g_GlobalFontSize to prevent possible errors
+    Save default font size value if none exists (8).
+    Removed the ending run message (by user(s) request).
+    Fixed memory leak, one that especially affected offline stackers.
+
+November 15, 2025
+    Fixed logic error in checking for EGS for EngineSettings.
+    Fixed mikebaldi references.
+    Added a reverse order function to ArrFnc.
+    Fixed bug where blank variable being copied in cloning process.
+    Fixed a possible recursion error location.
+    Added new Imports and AreaHasArmoredEnemy and GetActiveEnemies to memory functions.
+    Added FontSize to the possible settings in IC Script Hub's settings.json for the oldies.
+
+November 10, 2025
+    Fixed button locations in addon management.
+    Added the "LoadAfter" addons to the addon info section.
+    Updated base EGS check to check for contains "EGS" for webroot reads.
+    Fixed a couple of long-standing logic issues.
+    Updated Readme with Imp's updated repo.
+
+November 9, 2025
+    Fixed issue with servercalls that could prevent non-BrivGemFarm scripts from using it without a proxy in settings.json.
+    Added an extra test when restarting the game to recheck if a game has opened and closed and reopened during a restart.
+    Removed most old pointers from the Pointer Version Picker.
+    Fixed two issues in logic when restarting game.
+
+November 6, 2025
+    Added example MKLink file to repo.
+    Updated Readme.md.
+    Added user settings for TabControlHeight and TabControlWidth.
+    Fixed connect button not connecting.
+    Fixed addon management not maintaining proper ordering. (May require reordering addons after update, but restrictions now enforced properly when moving them)
+
 November 3, 2025
     Updated how formation checks are done, especially around stacking formations.
     Compromise between speed and accuracy.

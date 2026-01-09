@@ -70,7 +70,7 @@ class IC_MemoryFunctions_Class
 
     ;Updates installed after the date of this script may result in the pointer addresses no longer being accurate.
     GetVersion(){
-        return "v2.5.10, 2025-10-28"
+        return "v2.6.0, 2025-11-19"
     }
 
     GetPointersVersion(){
@@ -81,7 +81,7 @@ class IC_MemoryFunctions_Class
     ;You only need to do this once. But if the process closes/restarts, then you will need to perform this step again. Refer to the notes section below.
     ;Also, if the target process is running as admin, then the script will also require admin rights!
     ;Automatically selects offsets used depending on if process is 64bit or not (epic or steam)
-    OpenProcessReader(){
+    OpenProcessReader(doResetUnstableCollections := True){
         global g_UserSettings
         _MemoryManager.exeName := g_UserSettings[ "ExeName" ]
         Critical, On
@@ -96,6 +96,15 @@ class IC_MemoryFunctions_Class
         this.EngineSettings.Refresh()
         this.CrusadersGameDataSet.Refresh()
         this.DialogManager.Refresh()
+        if(doResetUnstableCollections)
+        {
+            this.GameManager.ResetUnstableCollectionsOnly()
+            this.GameSettings.ResetUnstableCollectionsOnly()
+            this.EngineSettings.ResetUnstableCollectionsOnly()
+            this.CrusadersGameDataSet.ResetUnstableCollectionsOnly()
+            this.DialogManager.ResetUnstableCollectionsOnly()
+            this.ActiveEffectKeyHandler.ResetUnstableCollectionsOnly()
+        }
         ; this.UserStatHandler.Refresh()
         ; this.UserData.Refresh()
         this.ActiveEffectKeyHandler.Refresh()
@@ -145,9 +154,37 @@ class IC_MemoryFunctions_Class
     }
 
     ReadActiveMonstersCount(){
-         return this.GameManager.game.gameInstances[this.GameInstance].Controller.area.activeMonsters.size.Read()
+        return this.GameManager.game.gameInstances[this.GameInstance].Controller.area.activeMonsters.size.Read()
     }
 
+    GetActiveEnemies(){
+        activeEnemies := {}
+        size := this.ReadActiveMonstersCount()
+        loop %size%
+            activeEnemies.Push(this.GameManager.game.gameInstances[this.GameInstance].Controller.area.activeMonsters[A_Index - 1])
+        return activeEnemies.Clone()
+    }
+
+    AreaHasArmoredEnemy()
+    {
+        listOfHealthRanges := {}
+        enemies := this.GetActiveEnemies() ; list of gameobjects
+        size := enemies.Count() 
+        loop %size%
+        {
+            enemyDef := enemies[A_Index].monsterDef
+            healthSize := enemyDef.HealthRanges.size.Read()
+            loop %healthSize%
+            {
+                armorStyle := enemyDef.HealthRanges[A_Index - 1].Read()
+                listOfHealthRanges.Push(armorStyle)
+                if(armorStyle == 2) ; 0 = normal, 1 = hits based, 2 = armored, 3 = favor
+                    return ListOfHealthRanges
+            }
+        }
+        return False
+    }
+    
     ReadResetting(){
         return this.GameManager.game.gameInstances[this.GameInstance].ResetHandler.Resetting.Read()
     }
@@ -191,12 +228,14 @@ class IC_MemoryFunctions_Class
         return this.GameManager.game.gameInstances[this.GameInstance].Controller.areaTransitioner.ScreenWipeEffect.DelayTimer.T.Read()
     }
 
-    ; 0 = right, 1 = left, 2 = static (instant)
+    ; 0 = right, 1 = left, 2 = static (instant) (old)
+    ; 0 = static (instant), 1 = right, 2 = left, 3 = JumpDown, 4 = FallDown (new)
     ReadTransitionDirection(){
         return this.GameManager.game.gameInstances[this.GameInstance].Controller.areaTransitioner.transitionDirection.Read()
     }
 
-    ; 0 = OnFromLeft, 1 = OnFromRight, 2 = OffToLeft, 3 = OffToRight
+    ; 0 = OnFromLeft, 1 = OnFromRight, 2 = OffToLeft, 3 = OffToRight (old)
+    ; 0 = OnFromLeft, 1 = OnFromRight, 2 = OnFromTop, 3 = OffToLeft, 4 = OffToRight, 5 = OffToBottom (new)
     ReadFormationTransitionDir(){
         return this.GameManager.game.gameInstances[this.GameInstance].Controller.formation.transitionDir.Read()
     }

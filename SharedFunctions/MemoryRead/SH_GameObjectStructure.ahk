@@ -210,6 +210,8 @@ class GameObjectStructure
             key := keyReadObj.Read()
             if(index == this.LastDictIndex[key])                                            ; Use previously created object if it is still being used.
                 return this.DictionaryObject[key]                                           ; Return cached key
+            else if (key == "")
+                return this.ReturnGameObject("")
             else
                 this.DictionaryObject[key] := ""                                            ; Clear cached key if it exists.
             GameObjectStructure.ReadIsLocked := True                                        ; Enable Lock before building entry
@@ -326,7 +328,6 @@ class GameObjectStructure
     ; Creates a gameobject at key, updates its offsets, copies the other values in the object to key object, propagates changes down chain of objects under key. 
     UpdateCollectionOffsets(key, collectionEntriesOffset, offset)
     {
-        this[key] := ""
         this[key] := this.StableClone()
         this[key].IsAddedIndex := true
         if (this._ArrayDimensions)
@@ -645,19 +646,31 @@ class GameObjectStructure
         GameObjectStructure.ReadIsLocked := wasLocked                                       ; Reset lock before return
     }
 
-
     ResetCollections()
     {
         this.DictionaryObject := {}
         this.LastDictIndex := {}
         for k,v in this
         {
-            if(!IsObject(v) OR !ObjGetBase(v).__Class == "GameObjectStructure" OR k == "BasePtr")
+            if(!IsObject(v) OR !(ObjGetBase(v).__Class == "GameObjectStructure") OR k == "BasePtr")
                 continue
             if(v.IsAddedIndex)
                 this[k] := "", this.Delete(k)
             else
                 this[k].ResetCollections()
+        }
+    }
+
+    ResetUnstableCollectionsOnly()
+    {
+        for k,v in this
+        {
+            if(!IsObject(v) OR !(ObjGetBase(v).__Class == "GameObjectStructure") OR k == "BasePtr")
+                continue
+            if(v.IsAddedIndex AND GameObjectStructure.SystemTypes[this._CollectionKeyType] == "")
+                this[k] := "", this.Delete(k)
+            else
+                this[k].ResetUnstableCollectionsOnly()
         }
     }
 
